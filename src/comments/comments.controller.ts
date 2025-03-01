@@ -13,7 +13,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commentService: CommentsService) { }
+  constructor(private readonly commentService: CommentsService) {}
 
   @Post()
   @UseGuards(AuthGuard)
@@ -30,7 +30,16 @@ export class CommentsController {
   findByTarget(@Param('targetId') targetId: number) {
     return this.commentService.findByTarget(targetId);
   }
-
+  @Delete('all')
+  @UseGuards(AuthGuard)
+  async deleteAll() {
+    return this.commentService.deleteAllComments();
+  }
+  @Delete('bulk')
+  @UseGuards(AuthGuard)
+  deleteMultiple(@Req() req, @Body() body: { commentIds: number[] }) {
+    return this.commentService.deleteMultiple(body.commentIds, req.user.id);
+  }
   @Delete(':id')
   @UseGuards(AuthGuard)
   delete(@Req() req, @Param('id') id: number) {

@@ -10,4 +10,4 @@ import { AuthModule } from 'src/auth/auth.module';
   controllers: [CommentsController],
   imports: [TypeOrmModule.forFeature([Comment]), AuthModule],
 })
-export class CommentsModule { }
+export class CommentsModule {}
