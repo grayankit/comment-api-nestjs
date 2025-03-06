@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { Session } from './session.entity';
 import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
 export interface AnilistTokenResponse {
   access_token: string;
   token_type: string;
@@ -18,14 +19,25 @@ export interface AniListUser {
 
 @Injectable()
 export class AuthService {
-  private clientId = '24415';
-  private clientSecret = '6auII3tVsrSvYgtlOhPSc9wUGmvmwVgWO1jnu0qY';
-  private redirectUri = 'http://localhost:3000/auth/callback';
+  private clientId: string;
+  private clientSecret: string;
+  private redirectUri: string;
 
   constructor(
     @InjectRepository(Session)
     private readonly sessionRepository: Repository<Session>,
-  ) { }
+    private readonly configService: ConfigService,
+  ) {
+    this.clientId = this.configService.get<string>('ANILIST_CLIENT_ID', '');
+    this.clientSecret = this.configService.get<string>(
+      'ANILIST_CLIENT_SERVICE',
+      '',
+    );
+    this.redirectUri = this.configService.get<string>(
+      'ANILIST_REDIRECT_URI',
+      '',
+    );
+  }
 
   async getAccessToken(code: string): Promise<AnilistTokenResponse> {
     const response = await axios.post<AnilistTokenResponse>(
