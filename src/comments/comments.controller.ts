@@ -4,12 +4,14 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthenticatedRequest } from 'src/auth/auth.types';
 
 @Controller('comments')
 export class CommentsController {
@@ -18,7 +20,7 @@ export class CommentsController {
   @Post()
   @UseGuards(AuthGuard)
   create(
-    @Req() req,
+    @Req() req: AuthenticatedRequest,
     @Body() body: { content: string; targetId: number; parentId?: number },
   ) {
     return this.commentService.create(
@@ -45,12 +47,25 @@ export class CommentsController {
   }
   @Delete('bulk')
   @UseGuards(AuthGuard)
-  deleteMultiple(@Req() req, @Body() body: { commentIds: number[] }) {
+  deleteMultiple(
+    @Req() req: AuthenticatedRequest,
+    @Body() body: { commentIds: number[] },
+  ) {
     return this.commentService.deleteMultiple(body.commentIds, req.user.id);
   }
   @Delete(':id')
   @UseGuards(AuthGuard)
-  delete(@Req() req, @Param('id') id: number) {
+  delete(@Req() req: AuthenticatedRequest, @Param('id') id: number) {
     return this.commentService.delete(id, req.user.id);
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  edit(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: number,
+    @Body() body: { content: string },
+  ) {
+    return this.commentService.edit(id, req.user.id, body.content);
   }
 }

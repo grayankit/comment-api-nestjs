@@ -22,6 +22,9 @@ export class Comment {
   @Column({ nullable: true })
   parentId?: number;
 
+  @Column({ default: false })
+  isEdited: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 }

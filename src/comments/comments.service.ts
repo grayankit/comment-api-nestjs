@@ -109,4 +109,21 @@ export class CommentsService {
     );
     return { message: 'All comments deleted successfully' };
   }
+  async edit(commentId: number, userId: number, newContent: string) {
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (comment.userId !== userId) {
+      throw new ForbiddenException('You can only edit your own comments');
+    }
+
+    comment.content = newContent;
+    comment.isEdited = true;
+    return this.commentRepository.save(comment);
+  }
 }
