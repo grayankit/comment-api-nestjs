@@ -146,5 +146,18 @@
 - **Users can edit, delete, and reply to comments.**
 - **Rate limiting** prevents spam.
 
-🚀 Your API is now well-documented and ready to use!
+## **Needed env**
+```
+# AniList API
+ANILIST_CLIENT_ID=your_client_id
+ANILIST_CLIENT_SECRET=your_client_secret
+ANILIST_REDIRECT_URI=http://localhost:3000/auth/callback
+
+# Database
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=your_db_user
+DATABASE_PASSWORD=your_db_password
+DATABASE_NAME=your_db_name
+```
 
