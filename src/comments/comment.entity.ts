@@ -19,6 +19,9 @@ export class Comment {
   @Column()
   targetId: number;
 
+  @Column({ nullable: true })
+  parentId?: number;
+
   @CreateDateColumn()
   createdAt: Date;
 }

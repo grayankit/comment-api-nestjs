@@ -12,13 +12,27 @@ export class CommentsService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
-  ) {}
+  ) { }
 
-  async create(userId: number, content: string, targetId: number) {
+  async create(
+    userId: number,
+    content: string,
+    targetId: number,
+    parentId?: number,
+  ) {
+    if (parentId) {
+      const parentComment = await this.commentRepository.findOne({
+        where: { id: parentId },
+      });
+      if (!parentComment) {
+        throw new NotFoundException('Parent commnet not found');
+      }
+    }
     const comment = this.commentRepository.create({
       userId,
       content,
       targetId,
+      parentId,
     });
     return this.commentRepository.save(comment);
   }
@@ -28,7 +42,28 @@ export class CommentsService {
   }
 
   async findByTarget(targetId: number) {
-    return this.commentRepository.find({ where: { targetId } });
+    const comments = await this.commentRepository.find({
+      where: { targetId },
+      order: { createdAt: 'ASC' },
+    });
+
+    type CommentWithReplies = Comment & { replies: CommentWithReplies[] };
+    const commentMap = new Map<number, CommentWithReplies>();
+
+    comments.forEach((comment) => {
+      commentMap.set(comment.id, { ...comment, replies: [] });
+    });
+
+    const nestedComments: CommentWithReplies[] = [];
+    commentMap.forEach((comment) => {
+      if (comment.parentId) {
+        commentMap.get(comment.parentId)?.replies.push(comment);
+      } else {
+        nestedComments.push(comment);
+      }
+    });
+
+    return nestedComments;
   }
 
   async delete(id: number, userId: number) {

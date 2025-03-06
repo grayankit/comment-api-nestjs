@@ -13,12 +13,20 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commentService: CommentsService) {}
+  constructor(private readonly commentService: CommentsService) { }
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Req() req, @Body() body: { content: string; targetId: number }) {
-    return this.commentService.create(req.user.id, body.content, body.targetId);
+  create(
+    @Req() req,
+    @Body() body: { content: string; targetId: number; parentId?: number },
+  ) {
+    return this.commentService.create(
+      req.user.id,
+      body.content,
+      body.targetId,
+      body.parentId,
+    );
   }
 
   @Get()
