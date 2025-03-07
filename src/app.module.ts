@@ -22,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
       synchronize: true,
+      ssl: true,
     }),
     CommentsModule,
     AuthModule,
@@ -37,4 +38,4 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
-export class AppModule { }
+export class AppModule {}
