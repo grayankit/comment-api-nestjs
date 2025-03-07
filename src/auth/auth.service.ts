@@ -30,7 +30,7 @@ export class AuthService {
   ) {
     this.clientId = this.configService.get<string>('ANILIST_CLIENT_ID', '');
     this.clientSecret = this.configService.get<string>(
-      'ANILIST_CLIENT_SERVICE',
+      'ANILIST_CLIENT_SECRET',
       '',
     );
     this.redirectUri = this.configService.get<string>(
